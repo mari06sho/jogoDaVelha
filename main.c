@@ -1,126 +1,186 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #define JOGADOR_X 'X'
 #define JOGADOR_O 'O'
-
 #define EMPATE 'E'
-
 #define CARACTERE_BRANCO '_'
+#define SEM_GANHADOR 'N'
 
-#define QTD_LINHAS 3
-#define QTD_COLUNAS 3
+typedef struct{
+    char tabuleiro[3][3];
+    char jogadorAtual;
+    int jogadas;
+    char ganhador;
+} jogoDaVelha;
 
-int main(int argc, char const *argv[]){
+void inicializarJogo(  jogoDaVelha *jogo);
+void exibirTabuleiro( jogoDaVelha *jogo);
+int verificarGanhador( jogoDaVelha *jogo);
+void alternarJogador( jogoDaVelha *jogo);
+int realizarJogada( jogoDaVelha *jogo, int posicao);
+void verificaEntrada();
+
+void inicializarJogo( jogoDaVelha *jogo){
+    int linha, coluna;
+    jogo -> jogadorAtual = JOGADOR_X;
+    jogo -> ganhador = SEM_GANHADOR;
+    jogo -> jogadas = 9;
+
+    for(linha = 0; linha < 3; linha++){
+        for(coluna = 0; coluna < 3; coluna++){
+            jogo -> tabuleiro[linha][coluna] = CARACTERE_BRANCO;
+        }
+    }
+}
+
+ void exibirTabuleiro( jogoDaVelha *jogo){
+    int linha, coluna;
+
+    printf("\n");
+    printf("  +---+---+---+\n");
+    for(linha = 0; linha < 3; linha++){
+        printf("  |");
+        for(coluna = 0; coluna < 3; coluna++){
+            if(jogo->tabuleiro[linha][coluna] == JOGADOR_X)
+                printf(" X |");
+            else if(jogo->tabuleiro[linha][coluna] == JOGADOR_O)
+                printf(" O |");
+            else
+                printf(" . |");
+        }
+        printf("\n");
+        if(linha < 2)
+            printf("  +---+---+---+\n");
+    }
+    printf("  +---+---+---+\n");
+    printf("\n");
+}
+
+void alternarJogador( jogoDaVelha *jogo){
+    if(jogo -> jogadorAtual == JOGADOR_X){
+       jogo -> jogadorAtual = JOGADOR_O;
+    }
+    else{
+       jogo -> jogadorAtual = JOGADOR_X;
+    }
+}
+
+int realizarJogada( jogoDaVelha *jogo, int posicao){
+    if(!(posicao >= 1 && posicao <= 9)){
+        printf("Posicao invalida! Digite um valor de 1 a 9!\n");
+        return 0;
+    }
     
-    int linha;
-    int coluna;
-    int posicao;
-    int contJogadas = 0;
-    int tamTabuleiro = QTD_LINHAS * QTD_COLUNAS;
+    posicao = posicao -1;
+    int linha, coluna;
 
-    char tabuleiro[QTD_LINHAS][QTD_COLUNAS];
-    char jogadorAtual = JOGADOR_X;
-    char ganhador = EMPATE;
+    if(posicao < 3){
+        linha = 0;
+        coluna = posicao;
+    }
+    else if(posicao < 6){
+        linha = 1;
+        coluna = posicao - 3;
+    }
+    else{
+        linha = 2;
+        coluna = posicao - 6;
+    }
 
-    for (linha = 0; linha < QTD_LINHAS; linha += 1){
-        for (coluna = 0; coluna < QTD_COLUNAS; coluna += 1){
-            tabuleiro[linha][coluna] = CARACTERE_BRANCO;
+    if(jogo -> tabuleiro[linha][coluna] != CARACTERE_BRANCO){
+        printf("Digite uma posicao que ainda nao foi preenchida.\n");
+        return 1;
+    }
+
+    jogo -> tabuleiro[linha][coluna]= jogo -> jogadorAtual;
+    jogo -> jogadas -= 1;
+
+    verificarGanhador(jogo);
+
+    if(jogo -> ganhador == SEM_GANHADOR){
+        alternarJogador(jogo);
+    }
+
+    return 2;
+}
+
+int verificarGanhador( jogoDaVelha *jogo){
+    int linha, coluna;
+ 
+    for(linha = 0; linha < 3; linha++){
+        if(jogo -> tabuleiro[linha][0] != CARACTERE_BRANCO && jogo -> tabuleiro[linha][0] == jogo -> tabuleiro[linha][1] && jogo -> tabuleiro[linha][0] == jogo -> tabuleiro[linha][2]){
+            jogo -> ganhador= jogo -> jogadorAtual;
+            return 0;
         }
     }
 
-    while (1){
-        printf("\n");
-
-        for(linha = 0; linha < QTD_LINHAS; coluna += 1){
-                for(coluna = 0; coluna < QTD_COLUNAS; coluna +=1){
-                    printf("%c", tabuleiro[linha][coluna]);
-                    printf("\n");
-                }
+    for(coluna = 0; coluna<3; coluna++){
+        if(jogo->tabuleiro[0][coluna] != CARACTERE_BRANCO && jogo->tabuleiro[0][coluna] == jogo->tabuleiro[1][coluna] && jogo->tabuleiro[0][coluna] == jogo->tabuleiro[2][coluna]){
+            jogo->ganhador= jogo->jogadorAtual;
+            return 1;
         }
+    }
 
-        printf("Vez do jogador %c\n", JOGADOR_X);
-        scanf("%d", &posicao);
+    if(jogo -> tabuleiro[0][0] != CARACTERE_BRANCO && jogo -> tabuleiro[0][0] == jogo->tabuleiro[1][1] && jogo -> tabuleiro[0][0] == jogo->tabuleiro[2][2]){
+        jogo -> ganhador= jogo->jogadorAtual;
+        return 3;
+    }
 
-        if(!(posicao >= 1 && posicao <= 9)){
-            printf("\nPosição inválida, digite novamente.\n");
+    if(jogo -> tabuleiro[0][2] != CARACTERE_BRANCO && jogo -> tabuleiro[0][2] == jogo->tabuleiro[1][1] && jogo -> tabuleiro[0][2] == jogo->tabuleiro[2][0]){
+        jogo -> ganhador= jogo->jogadorAtual;
+        return 4;
+    }
 
+    if(jogo -> jogadas == 0){
+        jogo -> ganhador= EMPATE;
+        return 5;
+    }
+
+    return 6;
+}
+
+void verificaEntrada(){
+    int caractere;
+    while((caractere = getchar()) != '\n' && caractere != EOF);
+}
+
+int main(){
+    jogoDaVelha *jogo = (jogoDaVelha*) malloc (sizeof(jogoDaVelha));
+    int posicao, ganha;
+
+    inicializarJogo(jogo);
+
+    printf("\n");
+    printf("================================\n");
+    printf("       JOGUIN DA VELHA  :)        \n");
+    printf("================================\n");
+    printf("O X comeca jogando.\n");
+    printf("Use as posicoes 1 a 9!\n\n");
+
+    while(jogo -> ganhador == SEM_GANHADOR){
+        exibirTabuleiro(jogo);
+        printf("Jogador %c, digite a posicao em que deseja jogar:\n", jogo -> jogadorAtual);
+
+        if(scanf("%d", &posicao) != 1){
+            printf("Entrada invalida. Digite um numero.\n");
+           verificaEntrada();
             continue;
         }
+       verificaEntrada();
 
-            if(!(posicao >= 1 && posicao <= 3)){
-                if (tabuleiro[0][posicao - 1] != CARACTERE_BRANCO){
-                    printf("\nEssa posição já foi preenchida, digite novamente.\n");
+        realizarJogada(jogo, posicao);
+        exibirTabuleiro(jogo);
+        ganha = verificarGanhador(jogo);
+    }
 
-                    continue;
-                }
-            
-            tabuleiro[0][posicao - 1] = jogadorAtual; 
-        }
+    if(ganha != 5){
+        printf("O jogador %c, venceu! Se garantiu :D\n", jogo -> jogadorAtual);
+    }
+    else{
+        printf("Deu velha, mo paia ):<\n");
+    }
 
-        else if(posicao >= 4 && posicao <= 6){
-            if(tabuleiro[1][posicao - 4] != CARACTERE_BRANCO){
-                printf("\nEssa posição já foi preenchida, digite novamente,\n");
-
-                continue;
-            }
-
-            tabuleiro[1][posicao - 4] = jogadorAtual; 
-        }
-
-        else if(posicao >= 7 && posicao <= 9){
-             if(tabuleiro[2][posicao - 7] != CARACTERE_BRANCO){
-                printf("\nEssa posição já foi preenchida, digite novamente,\n");
-
-                continue;
-            }
-
-             tabuleiro[2][posicao - 7] = jogadorAtual; 
-        }
-
-        for(linha = 0; linha < QTD_LINHAS; linha += 1){
-            ganhador = jogadorAtual;
-
-            for(linha = 0; linha < QTD_LINHAS; linha += 1){
-                if(tabuleiro[linha][coluna] = CARACTERE_BRANCO || tabuleiro[linha][coluna] != tabuleiro[linha][coluna -1]){
-                
-                    ganhador = EMPATE;
-
-                break;
-                }
-            }
-
-            if(ganhador != EMPATE){
-                break;
-            }
-        }
-     
-        if (ganhador = EMPATE){
-            for (coluna = 0; coluna < QTD_COLUNAS; coluna += 1){
-                ganhador = jogadorAtual;
-
-                for(linha = 1; linha < QTD_LINHAS; linha =+ 1){
-                    if(tabuleiro[linha][coluna] = CARACTERE_BRANCO || tabuleiro[linha][coluna] != tabuleiro[linha -1][coluna]){
-                        ganhador = EMPATE;
-
-                        break;
-                    }
-                }
-
-                if(ganhador != EMPATE){
-                    break;
-                }
-
-            }
-        }
-        
-        if(ganhador = EMPATE){
-            ganhador = jogadorAtual;
-
-            for(linha = 1; linha < QTD_LINHAS; linha += 1){
-                
-            }
-
-        }
-
-
+    free(jogo);
+    return 0;
 }
