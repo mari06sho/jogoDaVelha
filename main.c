@@ -149,6 +149,11 @@ int main(){
     jogoDaVelha *jogo = (jogoDaVelha*) malloc (sizeof(jogoDaVelha));
     int posicao, ganha;
 
+    if (jogo == NULL) {
+        printf("Erro ao alocar memoria.\n");
+        return 1;
+    }
+
     inicializarJogo(jogo);
 
     printf("\n");
@@ -169,13 +174,14 @@ int main(){
         }
        verificaEntrada();
 
-        realizarJogada(jogo, posicao);
+       if(realizarJogada(jogo, posicao) == 2){
         exibirTabuleiro(jogo);
         ganha = verificarGanhador(jogo);
+        }
     }
 
     if(ganha != 5){
-        printf("O jogador %c, venceu! Se garantiu :D\n", jogo -> jogadorAtual);
+        printf("O jogador %c, venceu! Se garantiu :D\n", jogo ->ganhador);
     }
     else{
         printf("Deu velha, mo paia ):<\n");
