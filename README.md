@@ -5,7 +5,6 @@
 <p>Jogo da Velha em C • Modo Dois Jogadores • Modo contra o Computador</p>
 
 <img src="https://img.shields.io/badge/LINGUAGEM-C-blue?style=for-the-badge"/>
-<img src="https://img.shields.io/badge/STATUS-CONCLUÍDO-brightgreen?style=for-the-badge"/>
 <img src="https://img.shields.io/badge/AMBIENTE%20ACADÊMICO-IFCE-green?style=for-the-badge"/>
 
 </div>
