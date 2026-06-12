@@ -1,6 +1,6 @@
 <div align="center">
 
-<h1>🎮 Joguin da Velha</h1>
+<h1>🎮 Jogo da Velha</h1>
 
 <p>Jogo da Velha em C • Modo Dois Jogadores • Modo contra o Computador</p>
 
@@ -26,8 +26,8 @@
 
 O jogo é dividido em dois arquivos:
 
-* `main.c` — modo dois jogadores, onde X e O se alternam no mesmo terminal
-* `desafio.c` — modo um jogador, onde você enfrenta o computador (jogador O) que faz jogadas aleatórias
+* `main.c`: Modo dois jogadores, onde X e O se alternam no mesmo terminal.
+* `desafio.c`: Modo um jogador, onde você enfrenta o computador que faz jogadas aleatórias.
 
 ## Estrutura do Projeto
 
@@ -44,14 +44,23 @@ O jogo é dividido em dois arquivos:
 
 * GCC instalado
 * Make instalado
-  * Linux: já vem instalado na maioria das distribuições
-  * Windows: use `mingw32-make` no lugar de `make`
+      * **Linux:** já vem instalado na maioria das distribuições
+      * **Windows:** instale o [MinGW](https://www.mingw-w64.org/) e use `mingw32-make` no lugar de `make`
+      * **macOS:** instale as ferramentas de linha de comando com `xcode-select --install`
 
 ### Compilar os dois arquivos de uma vez
 
+    **Linux e macOS:**
+
     make
 
+    **Windows:**
+
+    mingw32-make
+
 ### Executar
+
+    **Linux e macOS:**
 
     # Modo dois jogadores
     make run-main
@@ -59,11 +68,23 @@ O jogo é dividido em dois arquivos:
     # Modo contra o computador
     make run-desafio
 
+    **Windows:**
+
+    # Modo dois jogadores
+    mingw32-make run-main
+
+    # Modo contra o computador
+    mingw32-make run-desafio
+
 ### Limpar os executáveis
 
-    make clean
+    **Linux e macOS:**
 
-> No Windows com PowerShell, substitua `make` por `mingw32-make` em todos os comandos acima.
+    make clean
+ 
+    **Windows:**
+
+    mingw32-make clean
 
 ## Como Jogar
 
